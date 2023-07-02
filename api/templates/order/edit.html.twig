@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Order{% endblock %}
+
+{% block body %}
+    <h1>Edit Order</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.amount) }}
+    <div class="text-danger">
+        {{ form_errors(form.amount) }}
+    </div>
+    <button type="submit">Create Order</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('order_index') }}">back to list</a>
+{% endblock %}

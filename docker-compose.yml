@@ -1,0 +1,71 @@
+version: "3"
+services:
+    nginx_app:
+        image: nginx:1.16-alpine
+        container_name: nginx_app
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./api:/var/www/api
+            - ./docker/nginx:/etc/nginx/conf.d/
+        networks:
+            - app_network
+        depends_on:
+            - api_app
+    db_app:
+        image: mysql:8.0.31
+        container_name: db_app
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: app_app_db
+            MYSQL_ROOT_PASSWORD: app_app_password
+            MYSQL_PASSWORD: app_app_password
+            MYSQL_USER: app_app_user
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./db_data:/var/lib/mysql
+            - ./docker/mysql:/etc/mysql/conf.d
+        networks:
+            - app_network
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        depends_on:
+            - db_app
+        ports:
+            - 8783:80
+        environment:
+            - PMA_ARBITRARY=1
+        networks:
+            - app_network
+
+    api_app:
+        build:
+            args:
+                user: ubuntu
+                uid: 1000
+            context: ./docker/php
+            dockerfile: Dockerfile
+        tty: true
+        container_name: api_app
+        restart: unless-stopped
+        working_dir: /var/www/api
+        volumes:
+            - ./api:/var/www/api
+        networks:
+            - app_network
+        links:
+            - db_app
+
+volumes:
+    db_data:
+
+networks:
+    app_network:
+        driver: bridge

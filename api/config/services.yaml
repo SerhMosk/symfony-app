@@ -6,6 +6,9 @@
 parameters:
 
 services:
+    App\Form\OrderType:
+        arguments:
+            $id: '@=request.attributes.get("id")'
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

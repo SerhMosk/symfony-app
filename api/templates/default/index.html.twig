@@ -9,12 +9,35 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <a href="{{ path('product_index') }}">Products</a>
+    <a href="{{ path('order_index') }}">Create order</a>
+    <h1>Orders</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/api/src/Controller/DefaultController.php'|file_link(0) }}">src/Controller/DefaultController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/api/templates/default/index.html.twig'|file_link(0) }}">templates/default/index.html.twig</a></code></li>
-    </ul>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Product</th>
+            <th>Amount</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.product.title }}</td>
+                <td>{{ order.amount }}</td>
+                <td style="display: flex">
+                    <a href="{{ path('order_edit', {'id': order.id}) }}">Edit</a>
+                    <form action="{{ path('order_delete', {'id': order.id}) }}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
 </div>
 {% endblock %}

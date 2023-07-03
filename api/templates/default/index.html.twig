@@ -19,6 +19,8 @@
             <th>id</th>
             <th>Product</th>
             <th>Amount</th>
+            <th>Price</th>
+            <th>Total</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -28,6 +30,8 @@
                 <td>{{ order.id }}</td>
                 <td>{{ order.product.title }}</td>
                 <td>{{ order.amount }}</td>
+                <td>{{ order.product.price }}</td>
+                <td>{{ order.amount*order.product.price }}</td>
                 <td style="display: flex">
                     <a href="{{ path('order_edit', {'id': order.id}) }}">Edit</a>
                     <form action="{{ path('order_delete', {'id': order.id}) }}" method="POST">
